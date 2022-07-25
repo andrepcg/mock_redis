@@ -78,8 +78,9 @@ class MockRedis
       with_list_at(key, &:length)
     end
 
-    def lpop(key)
-      with_list_at(key, &:shift)
+    def lpop(key, count = 1)
+      value = with_list_at(key) { |l| l.shift(count) }
+      count == 1 ? value.first : value
     end
 
     def lpush(key, values)
@@ -151,8 +152,9 @@ class MockRedis
       end
     end
 
-    def rpop(key)
-      with_list_at(key) { |list| list&.pop }
+    def rpop(key, count = 1)
+      value = with_list_at(key) { |list| list&.pop(count) }
+      count == 1 ? value.first : value
     end
 
     def rpoplpush(source, destination)
